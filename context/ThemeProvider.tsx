@@ -18,14 +18,22 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState("");
 
-  useEffect(() => {
-    if (theme === "dark") {
-      setTheme("light");
-      document.documentElement.classList.add("light");
-    } else {
+  const handleThemeChange = () => {
+    if (
+      localStorage.getItem("theme") === "dark" ||
+      (!localStorage.getItem("theme") &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
       setTheme("dark");
       document.documentElement.classList.add("dark");
+    } else {
+      setTheme("light");
+      document.documentElement.classList.remove("dark");
     }
+  };
+
+  useEffect(() => {
+    handleThemeChange();
   }, [theme]);
 
   return (
